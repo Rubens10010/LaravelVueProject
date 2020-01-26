@@ -24,6 +24,9 @@
     "vue-template-compiler": "^2.6.10"
   },
   "dependencies": {
-    "popper.js": "^1.16.1"
+    "moment": "^2.24.0",
+    "popper.js": "^1.16.1",
+    "sweetalert2": "^9.7.0",
+    "vue-progressbar": "^0.7.5"
   }
 }
