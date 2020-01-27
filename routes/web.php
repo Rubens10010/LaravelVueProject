@@ -18,5 +18,14 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+/*
+Route::get('{path}', "HomeController@index")->where('path', '([A-z\d-\/_.]+)?');
+*/
 
+//Route::get('login/github', 'Auth\LoginController@redirectToProvider');
+//Route::get('login/github/callback', 'Auth\LoginController@handleProviderCallback');
+Route::get('/auth/redirect/{provider}', 'Auth\LoginController@redirect');
+Route::get('/callback/{provider}', 'Auth\LoginController@callback');
+
+// Always last line
 Route::get('{path}', "HomeController@index")->where('path', '([A-z\d-\/_.]+)?');
