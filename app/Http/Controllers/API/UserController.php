@@ -64,7 +64,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return ['message'=>'update user info'];
     }
 
     /**
@@ -75,6 +75,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+        // Delete the user from DB
+        $user->delete();
+        // Send success
+        return ['message' => 'User Deleted'];
     }
 }
