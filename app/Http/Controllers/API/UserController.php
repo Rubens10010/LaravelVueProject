@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:api');   // people must be authenticated with token api
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,8 +32,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name' => 'required|string|max:191',
+            'email' => 'required|string|email|max:191|unique:users',
             'password' => 'required|string|min:6',
             'type' => 'required'
         ]);
@@ -50,9 +54,20 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function profile()
+    {
+        return auth('api')->user();
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
-        //
+        
     }
 
     /**
@@ -64,7 +79,15 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return ['message'=>'update user info'];
+        $user = User::findOrFail($id);
+        $this->validate($request, [
+            'name' => 'required|string|max:191',
+            'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
+            'password' => 'sometimes|string|min:6',
+            'type' => 'required'
+        ]);
+        $user->update($request->all());
+        return ['message'=>'updated user info'];
     }
 
     /**

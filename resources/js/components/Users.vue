@@ -66,7 +66,7 @@
 				</button>
 				</div>
 
-				<form @submit.prevent="editmode ? updateUser : createUser">
+				<form @submit.prevent="editmode ? updateUser() : createUser()">
 				<div class="modal-body">
 
 					<div class="form-group">
@@ -160,12 +160,21 @@
 			updateUser(){
 				this.$Progress.start();
 				// PUT|PATCH REQUEST
-				/*this.form.put('api/user/'+this.form.id).then(()=>{
+				this.form.put('api/user/'+this.form.id).then(()=>{
 					// success
+					// Order matters
+					Fire.$emit('UsersChanged');
+					Swal.fire(
+						'Updated!',
+						'Information has been updated.',
+						'success'
+					)
+					$('#addNew').modal('hide');
+					$('.modal-backdrop').hide();
 					this.$Progress.finish();
 				}).catch(()=>{
-					//this.$Progress.fail();
-				});*/
+					this.$Progress.fail();
+				});
 			},
 			deleteUser(id){
 				// Ajax request to server

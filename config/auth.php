@@ -35,6 +35,7 @@ return [
     |
     */
 
+    // api driver was changed from token to passport
     'guards' => [
         'web' => [
             'driver' => 'session',
@@ -42,7 +43,7 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'passport',
             'provider' => 'users',
             'hash' => false,
         ],
