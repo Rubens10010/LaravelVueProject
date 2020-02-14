@@ -174,41 +174,45 @@
                   
                   <div class="tab-pane active" id="settings">
                     <form class="form-horizontal">
-                      <div class="form-group row">
+                      <div class="form-group">
                         <label for="inputName" class="col-sm-2 col-form-label">Name</label>
-                        <div class="col-sm-10">
-                          <input type="email" v-model="form.name" class="form-control" id="inputName" placeholder="Name">
+                        <div class="col-sm-12">
+                          <input type="email" v-model="form.name" class="form-control" id="inputName" placeholder="Name" :class="{ 'is-invalid': form.errors.has('name') }">
+                          <has-error :form="form" field="name"></has-error>
                         </div>
                       </div>
-                      <div class="form-group row">
+                      <div class="form-group">
                         <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-                        <div class="col-sm-10">
-                          <input type="email" v-model="form.email" class="form-control" id="inputEmail" placeholder="Email">
+                        <div class="col-sm-12">
+                          <input type="email" v-model="form.email" class="form-control" :class="{ 'is-invalid': form.errors.has('email') }" id="inputEmail" placeholder="Email">
+                          <has-error :form="form" field="email"></has-error>
                         </div>
                       </div>
 
-                      <div class="form-group row">
+                      <div class="form-group">
                         <label for="inputExperience" class="col-sm-2 col-form-label">Experience</label>
-                        <div class="col-sm-10">
-                          <textarea class="form-control" v-model="form.bio"  id="inputExperience" placeholder="Experience"></textarea>
+                        <div class="col-sm-12">
+                          <textarea class="form-control" v-model="form.bio"  id="inputExperience" placeholder="Experience" :class="{ 'is-invalid': form.errors.has('bio') }"></textarea>
+                          <has-error :form="form" field="bio"></has-error>
                         </div>
                       </div>
-                      <div class="form-group row">
+                      <div class="form-group">
                         <label for="inputName2" class="col-sm-2 col-form-label">Profile Photo</label>
                         <div class="col-sm-10">
-                          <input type="file" class="" id="inputFile" value="inputFile">
+                          <input type="file" class="" id="inputFile" value="inputFile" @change="updateProfile">
                         </div>
                       </div>
-                      <div class="form-group row">
-                        <label for="inputSkills" class="col-sm-2 col-form-label">Password (leave empty if not changing)</label>
-                        <div class="col-sm-10">
-                          <input type="password" v-model="form.password" class="form-control" id="inputPassword" value="" placeholder="Password">
+                      <div class="form-group">
+                        <label for="password" class="col-sm-12 col-form-label">Password (leave empty if not changing)</label>
+                        <div class="col-sm-12">
+                          <input type="password" v-model="form.password" class="form-control" id="inputPassword" value="" placeholder="Password" :class="{ 'is-invalid': form.errors.has('password') }">
+                          <has-error :form="form" field="password"></has-error>
                         </div>
                       </div>
                       
-                      <div class="form-group row">
+                      <div class="form-group">
                         <div class="offset-sm-2 col-sm-10">
-                          <button type="submit" class="btn btn-danger">Submit</button>
+                          <button @click.prevent="updateInfo()" type="submit" class="btn btn-success">Update</button>
                         </div>
                       </div>
                     </form>
@@ -230,14 +234,14 @@
         data(){
             return {
                 form: new Form({
-					id: '',
-					name: '',
-					email: '',
-					password: '',
-					type: '',
-					bio: '',
-					photo: ''
-				})
+                id: '',
+                name: '',
+                email: '',
+                password: '',
+                type: '',
+                bio: '',
+                photo: ''
+              })
             }
         },
         mounted() {
@@ -248,6 +252,51 @@
             axios.get("api/profile").then(
                 ({data}) => (this.form.fill(data))
             )
+        },
+        methods: {
+          updateInfo(){
+            this.$Progress.start();
+            // axios request
+            this.form.put('api/profile/')
+            .then(()=>{
+              this.$Progress.finish();
+              Swal.fire(
+                'Updated!',
+                'Information has been updated.',
+                'success'
+              )
+            })
+            .catch(()=>{
+              this.$Progress.fail();
+            })
+          },
+          updateProfile(e){
+            // Grab the file
+            let file = e.target.files[0];
+            console.log(file);  // display information of file
+            // Convert to base64
+            let reader = new FileReader();
+              
+            if(file['size'] < 2111775){
+              reader.onloadend = (file) =>  {
+                // assign base64 string
+                this.form.photo = reader.result;
+              }
+              reader.readAsDataURL(file);
+            } else {
+              // toast sweet alert
+              /*swal({
+                type: 'error',
+                title: 'Ooops...',
+                text: 'Your file is too large, can\'t upload',
+              })*/
+              Swal.fire(
+                'Ooops!',
+                'Your file is too large, can\'t upload',
+                'error'
+              )
+            }
+          }
         }
     }
 </script>
