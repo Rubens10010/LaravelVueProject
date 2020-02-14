@@ -17,7 +17,7 @@
                         <h5 class="widget-user-desc text-right">Web Designer</h5>
                     </div>
                     <div class="widget-user-image">
-                        <img class="img-circle" src="" alt="User Avatar">
+                        <img class="img-circle" :src="getProfilePhoto()" alt="User Avatar">
                     </div>
                     <div class="card-footer">
                         <div class="row">
@@ -254,12 +254,18 @@
             )
         },
         methods: {
+          getProfilePhoto(){
+            return "img/profile/"+this.form.photo;
+          },
           updateInfo(){
             this.$Progress.start();
             // axios request
             this.form.put('api/profile/')
             .then(()=>{
               this.$Progress.finish();
+              axios.get("api/profile").then(
+                ({data}) => (this.form.fill(data))
+              );
               Swal.fire(
                 'Updated!',
                 'Information has been updated.',
