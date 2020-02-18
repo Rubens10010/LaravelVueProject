@@ -211,7 +211,7 @@
                       </div>
                       
                       <div class="form-group">
-                        <div class="offset-sm-2 col-sm-10">
+                        <div class=" col-sm-10">
                           <button @click.prevent="updateInfo()" type="submit" class="btn btn-success">Update</button>
                         </div>
                       </div>

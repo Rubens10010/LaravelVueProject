@@ -11,6 +11,7 @@ class UserController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:api');   // people must be authenticated with token api
+        // $this->authorize('isAdmin');
     }
 
     /**
@@ -20,7 +21,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::latest()->paginate(10);
+        return User::latest()->paginate(20);
     }
 
     /**
@@ -129,6 +130,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        // First authorize user
+        $this->authorize('isAdmin');
         $user = User::findOrFail($id);
         // Delete the user from DB
         $user->delete();
